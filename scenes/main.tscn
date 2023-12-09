@@ -1,0 +1,91 @@
+[gd_scene load_steps=6 format=3 uid="uid://cdm5jj77r2uyp"]
+
+[ext_resource type="PackedScene" uid="uid://cfasfcou2gexq" path="res://scenes/mc.tscn" id="1_3ms1k"]
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_f85ub"]
+[ext_resource type="PackedScene" uid="uid://c84wl2c7us1tm" path="res://scenes/obstacle.tscn" id="3_x53jq"]
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_y1ikc"]
+a = Vector2(160, 0)
+b = Vector2(150, 0)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_50a1q"]
+a = Vector2(1152, 0)
+b = Vector2(0, 0)
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_f85ub")
+mcScene = ExtResource("1_3ms1k")
+obstacleScene = ExtResource("3_x53jq")
+
+[node name="Boundaries" type="Node2D" parent="."]
+
+[node name="Floor" type="Area2D" parent="Boundaries"]
+position = Vector2(0, 648)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/Floor"]
+scale = Vector2(6.4, 1)
+shape = SubResource("SegmentShape2D_y1ikc")
+
+[node name="Ceiling" type="Area2D" parent="Boundaries"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Boundaries/Ceiling"]
+shape = SubResource("SegmentShape2D_50a1q")
+
+[node name="Timer" type="Timer" parent="."]
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+pivot_offset = Vector2(576, 324)
+
+[node name="ButtonsContainer" type="BoxContainer" parent="UI"]
+layout_mode = 2
+offset_left = 384.0
+offset_top = 176.0
+offset_right = 768.0
+offset_bottom = 565.0
+alignment = 1
+
+[node name="RestartButton" type="Button" parent="UI/ButtonsContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+keep_pressed_outside = true
+text = "Try Again"
+
+[node name="ExitButton" type="Button" parent="UI/ButtonsContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+text = "Exit"
+
+[node name="ColorRect" type="ColorRect" parent="UI"]
+layout_mode = 2
+offset_left = 552.0
+offset_top = 64.0
+offset_right = 592.0
+offset_bottom = 104.0
+size_flags_horizontal = 3
+color = Color(0, 0, 0, 0.247059)
+
+[node name="ScoreContainer" type="BoxContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -24.0
+offset_top = 64.0
+offset_right = 16.0
+offset_bottom = 104.0
+grow_horizontal = 2
+
+[node name="Score" type="Label" parent="UI/ScoreContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
