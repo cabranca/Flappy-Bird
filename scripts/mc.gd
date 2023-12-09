@@ -1,5 +1,7 @@
 extends Area2D
 
+signal game_over
+
 const JUMP_VELOCITY = -300.0
 const GRAVITY = 1200.0
 
@@ -24,3 +26,5 @@ func _physics_process(delta):
 
 func _on_area_entered(_area):
 	collided = true
+	game_over.emit()
+	queue_free()

@@ -3,7 +3,6 @@ extends Node2D
 @export var mcScene : PackedScene
 @export var obstacleScene : PackedScene
 
-const PLAYER_POSITION = Vector2(990, 160)
 const OBSTACLE_X_POSITION = 0
 
 var difficulty = 1
@@ -22,7 +21,8 @@ func _process(_delta):
 
 func init_mc():
 	var mc = mcScene.instantiate()
-	mc.position = PLAYER_POSITION
+	mc.position = GlobalVariables.MC_POSITION
+	mc.game_over.connect(on_game_over)
 	add_child(mc)
 
 
@@ -36,10 +36,10 @@ func spawn_obstacles():
 	var viewportHeight = ProjectSettings.get_setting("display/window/size/viewport_height")
 	
 	var firstObstacleYPos = viewportHeight / 2 - distanceToCenter + offset
-	init_obstacle(firstObstacleYPos)
+	init_obstacle(firstObstacleYPos, true)
 	
 	var secondObstacleYPos = viewportHeight / 2 + distanceToCenter + offset
-	init_obstacle(secondObstacleYPos)
+	init_obstacle(secondObstacleYPos, false)
 
 
 func generateObstaclesDistance():
@@ -58,7 +58,28 @@ func generateObstaclesSpawnOffset():
 	seed -= 64 # Translate the range
 	return seed
 
-func init_obstacle(yPosition):
+func init_obstacle(yPosition, connectSignal):
 	var obstacle = obstacleScene.instantiate()
 	obstacle.position = Vector2(OBSTACLE_X_POSITION, yPosition)
+	if connectSignal:
+		obstacle.on_scored.connect(on_scored)
 	add_child(obstacle)
+
+
+func on_scored():
+	GlobalVariables.score += 1
+	$UI/Score.text = str(GlobalVariables.score)
+
+func on_game_over():
+	$Timer.stop()
+	get_tree().call_group("Obstacle", "queue_free")
+	$UI/ButtonsContainer.visible = true
+	$UI/GameOverBG.visible = true
+
+
+func _on_restart():
+	get_tree().reload_current_scene()
+
+
+func _on_exit():
+	get_tree().quit()

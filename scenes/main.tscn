@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://cdm5jj77r2uyp"]
+[gd_scene load_steps=7 format=3 uid="uid://cdm5jj77r2uyp"]
 
 [ext_resource type="PackedScene" uid="uid://cfasfcou2gexq" path="res://scenes/mc.tscn" id="1_3ms1k"]
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_f85ub"]
@@ -11,6 +11,12 @@ b = Vector2(150, 0)
 [sub_resource type="SegmentShape2D" id="SegmentShape2D_50a1q"]
 a = Vector2(1152, 0)
 b = Vector2(0, 0)
+
+[sub_resource type="LabelSettings" id="LabelSettings_b8fk5"]
+font_size = 30
+shadow_size = 3
+shadow_color = Color(0, 0, 0, 1)
+shadow_offset = Vector2(0, 0)
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_f85ub")
@@ -34,13 +40,25 @@ shape = SubResource("SegmentShape2D_50a1q")
 [node name="Timer" type="Timer" parent="."]
 
 [node name="UI" type="Control" parent="."]
+z_index = 1
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1152.0
 offset_bottom = 648.0
 pivot_offset = Vector2(576, 324)
 
+[node name="GameOverBG" type="ColorRect" parent="UI"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.454902, 0.176471, 0.690196, 0.882353)
+
 [node name="ButtonsContainer" type="BoxContainer" parent="UI"]
+visible = false
 layout_mode = 2
 offset_left = 384.0
 offset_top = 176.0
@@ -61,31 +79,22 @@ size_flags_horizontal = 6
 size_flags_vertical = 4
 text = "Exit"
 
-[node name="ColorRect" type="ColorRect" parent="UI"]
-layout_mode = 2
-offset_left = 552.0
-offset_top = 64.0
-offset_right = 592.0
-offset_bottom = 104.0
-size_flags_horizontal = 3
-color = Color(0, 0, 0, 0.247059)
-
-[node name="ScoreContainer" type="BoxContainer" parent="UI"]
+[node name="Score" type="Label" parent="UI"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -24.0
-offset_top = 64.0
-offset_right = 16.0
-offset_bottom = 104.0
+offset_left = -8.0
+offset_top = 168.0
+offset_right = 9.0
+offset_bottom = 213.0
 grow_horizontal = 2
-
-[node name="Score" type="Label" parent="UI/ScoreContainer"]
-layout_mode = 2
-size_flags_horizontal = 6
+size_flags_horizontal = 4
 text = "0"
+label_settings = SubResource("LabelSettings_b8fk5")
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="pressed" from="UI/ButtonsContainer/RestartButton" to="." method="_on_restart"]
+[connection signal="pressed" from="UI/ButtonsContainer/ExitButton" to="." method="_on_exit"]
